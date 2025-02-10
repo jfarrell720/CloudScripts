@@ -15,7 +15,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 script {
-                    sh "terraform init -chdir=${params.TERRAFORM_DIRECTORY}"
+                    powershell "terraform init -chdir=${params.TERRAFORM_DIRECTORY}"
                 }
             }
         }
@@ -23,7 +23,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    sh "terraform -chdir=${params.TERRAFORM_DIRECTORY} plan -out=tfplan"
+                    powershell "terraform -chdir=${params.TERRAFORM_DIRECTORY} plan -out=tfplan"
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    sh "terraform -chdir=${params.TERRAFORM_DIRECTORY} apply -auto-approve tfplan"
+                    powershell "terraform -chdir=${params.TERRAFORM_DIRECTORY} apply -auto-approve tfplan"
                 }
             }
         }

@@ -29,7 +29,7 @@ pipeline {
                     def terraformFiles = params.TERRAFORM_FILES.split(',')
                     
                     // Check if any of the specified Terraform files have changed
-                    def changes = sh(script: "git diff --name-only HEAD~1", returnStdout: true).trim()
+                    def changes = powershell(script: "git diff --name-only HEAD~1", returnStdout: true).trim()
                     
                     // Only run Terraform Init if any of the specified files have changed
                     def shouldRunInit = terraformFiles.any { file -> changes.contains(file) }
@@ -49,7 +49,7 @@ pipeline {
             steps {
                 script {
                     def terraformFiles = params.TERRAFORM_FILES.split(',')
-                    def changes = sh(script: "git diff --name-only HEAD~1", returnStdout: true).trim()
+                    def changes = powershell(script: "git diff --name-only HEAD~1", returnStdout: true).trim()
 
                     // Only run Terraform Plan if any of the specified files have changed
                     def shouldRunPlan = terraformFiles.any { file -> changes.contains(file) }
@@ -69,7 +69,7 @@ pipeline {
             steps {
                 script {
                     def terraformFiles = params.TERRAFORM_FILES.split(',')
-                    def changes = sh(script: "git diff --name-only HEAD~1", returnStdout: true).trim()
+                    def changes = powershell(script: "git diff --name-only HEAD~1", returnStdout: true).trim()
 
                     // Only run Terraform Apply if any of the specified files have changed
                     def shouldRunApply = terraformFiles.any { file -> changes.contains(file) }

@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'TERRAFORM_DIRECTORY', defaultValue: 'terraform', description: 'Directory containing Terraform configuration')
         string(name: 'TERRAFORM_FILES', defaultValue: 'LambdaRoles.tf,FetchTimeLambda.tf', description: 'Comma-separated list of Terraform files to build')
-        string(name: 'GITHUB_REPO', defaultValue: 'https://github.com/jfarrell720/CloudScripts.git', description: 'GitHub repository URL')
+        string(name: 'GITHUB_REPO', defaultValue: 'https://github.com/your-username/your-repo.git', description: 'GitHub repository URL')
     }
 
     environment {
@@ -33,11 +32,10 @@ pipeline {
                     def changes = sh(script: "git diff --name-only HEAD~1", returnStdout: true).trim()
                     
                     // Only run Terraform Init if any of the specified files have changed
-                    def shouldRunInit = terraformFiles.any { file -> changes.contains("${params.TERRAFORM_DIRECTORY}/${file}") }
+                    def shouldRunInit = terraformFiles.any { file -> changes.contains(file) }
                     if (shouldRunInit) {
                         echo 'Relevant Terraform files changed, proceeding with terraform init.'
                         powershell """
-                            cd ${params.TERRAFORM_DIRECTORY}
                             terraform init
                         """
                     } else {
@@ -54,11 +52,10 @@ pipeline {
                     def changes = sh(script: "git diff --name-only HEAD~1", returnStdout: true).trim()
 
                     // Only run Terraform Plan if any of the specified files have changed
-                    def shouldRunPlan = terraformFiles.any { file -> changes.contains("${params.TERRAFORM_DIRECTORY}/${file}") }
+                    def shouldRunPlan = terraformFiles.any { file -> changes.contains(file) }
                     if (shouldRunPlan) {
                         echo 'Relevant Terraform files changed, proceeding with terraform plan.'
                         powershell """
-                            cd ${params.TERRAFORM_DIRECTORY}
                             terraform plan -out=tfplan
                         """
                     } else {
@@ -75,11 +72,10 @@ pipeline {
                     def changes = sh(script: "git diff --name-only HEAD~1", returnStdout: true).trim()
 
                     // Only run Terraform Apply if any of the specified files have changed
-                    def shouldRunApply = terraformFiles.any { file -> changes.contains("${params.TERRAFORM_DIRECTORY}/${file}") }
+                    def shouldRunApply = terraformFiles.any { file -> changes.contains(file) }
                     if (shouldRunApply) {
                         echo 'Relevant Terraform files changed, proceeding with terraform apply.'
                         powershell """
-                            cd ${params.TERRAFORM_DIRECTORY}
                             terraform apply -auto-approve tfplan
                         """
                     } else {

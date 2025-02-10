@@ -22,6 +22,23 @@ pipeline {
             }
         }
 
+        stage('Package Lambda') {
+            steps {
+                script {
+                    // Check if the lambda zip file exists
+                    echo 'Checking if the Lambda zip file exists'
+                    powershell """
+                        if (-Not (Test-Path 'lambda_function.zip')) {
+                            Write-Host 'Lambda zip file does not exist. Packaging now...'
+                            Compress-Archive -Path lambda_function/ -DestinationPath lambda_function.zip
+                        } else {
+                            Write-Host 'Lambda zip file already exists.'
+                        }
+                    """
+                }
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 script {

@@ -2,7 +2,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_lambda_function" "current_time_lambda" {
+resource "aws_lambda_function" "fetch_time_lambda" {
   function_name = "FetchCurrentTime"
   runtime       = "python3.9"
   handler       = "lambda_function.lambda_handler"

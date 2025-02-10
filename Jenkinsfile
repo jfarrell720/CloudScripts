@@ -3,7 +3,7 @@ pipeline {
 
     parameters {
         string(name: 'TERRAFORM_FILES', defaultValue: 'LambdaRoles.tf,FetchTimeLambda.tf', description: 'Comma-separated list of Terraform files to build')
-        string(name: 'GITHUB_REPO', defaultValue: 'https://github.com/your-username/your-repo.git', description: 'GitHub repository URL')
+        string(name: 'GITHUB_REPO', defaultValue: 'https://github.com/jfarrell720/CloudScripts.git', description: 'GitHub repository URL')
     }
 
     environment {

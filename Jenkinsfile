@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'TERRAFORM_FILES', defaultValue: 'lambda_function.tf,s3_bucket.tf', description: 'Comma-separated list of Terraform files to apply')
+        string(name: 'TERRAFORM_DIRECTORY', defaultValue: 'terraform', description: 'Directory containing Terraform configuration')
     }
 
     environment {
@@ -11,17 +11,11 @@ pipeline {
         AWS_DEFAULT_REGION = 'us-east-1'
     }
 
-    pipeline {
-    agent any
-
     stages {
         stage('Terraform Init') {
             steps {
                 script {
-                    def files = params.TERRAFORM_FILES.split(',')
-                    files.each { file ->
-                        sh "terraform init -chdir=${file}"
-                    }
+                    sh "terraform init -chdir=${params.TERRAFORM_DIRECTORY}"
                 }
             }
         }
@@ -29,10 +23,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    def files = params.TERRAFORM_FILES.split(',')
-                    files.each { file ->
-                        sh "terraform -chdir=${file} plan -out=tfplan"
-                    }
+                    sh "terraform -chdir=${params.TERRAFORM_DIRECTORY} plan -out=tfplan"
                 }
             }
         }
@@ -40,10 +31,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    def files = params.TERRAFORM_FILES.split(',')
-                    files.each { file ->
-                        sh "terraform -chdir=${file} apply -auto-approve tfplan"
-                    }
+                    sh "terraform -chdir=${params.TERRAFORM_DIRECTORY} apply -auto-approve tfplan"
                 }
             }
         }

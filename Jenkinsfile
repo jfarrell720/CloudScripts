@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Checkout from GitHub') {
             steps {
-                git 'https://github.com/jfarrell720/CloudScripts.git'
+                git branch: 'main', url: 'https://github.com/jfarrell720/CloudScripts.git'
             }
         }
 

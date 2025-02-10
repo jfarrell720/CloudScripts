@@ -14,8 +14,7 @@ pipeline {
     stages {
         stage('Checkout from GitHub') {
             steps {
-                // Clone the repository from GitHub
-                git 'https://github.com/your-username/your-repository.git'  // Replace with your actual GitHub repository URL
+                git 'https://github.com/jfarrell720/CloudScripts.git'
             }
         }
 
@@ -24,7 +23,7 @@ pipeline {
                 script {
                     def files = params.TERRAFORM_FILES.split(',')
                     files.each { file ->
-                        sh "terraform init ${file}"  // Initialize Terraform for the selected files
+                        sh "terraform init ${file}"
                     }
                 }
             }
@@ -35,7 +34,7 @@ pipeline {
                 script {
                     def files = params.TERRAFORM_FILES.split(',')
                     files.each { file ->
-                        sh "terraform plan -out=tfplan_${file} ${file}"  // Create a plan for the selected files
+                        sh "terraform plan -out=tfplan_${file} ${file}"
                     }
                 }
             }
@@ -46,7 +45,7 @@ pipeline {
                 script {
                     def files = params.TERRAFORM_FILES.split(',')
                     files.each { file ->
-                        sh "terraform apply -auto-approve tfplan_${file}"  // Apply the plan to deploy resources to AWS
+                        sh "terraform apply -auto-approve tfplan_${file}"
                     }
                 }
             }

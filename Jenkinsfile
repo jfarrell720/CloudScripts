@@ -12,18 +12,12 @@ pipeline {
     }
 
     stages {
-        stage('Checkout from GitHub') {
-            steps {
-                git branch: 'main', url: 'https://github.com/jfarrell720/CloudScripts.git'
-            }
-        }
-
         stage('Terraform Init') {
             steps {
                 script {
-                    def files = params.TERRAFORM_FILES.split(',')
+                    def files = TERRAFORM_FILES.split(',')
                     files.each { file ->
-                        sh "terraform init ${file}"
+                        powershell "terraform init ${file}"
                     }
                 }
             }
@@ -32,9 +26,9 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    def files = params.TERRAFORM_FILES.split(',')
+                    def files = TERRAFORM_FILES.split(',')
                     files.each { file ->
-                        sh "terraform plan -out=tfplan_${file} ${file}"
+                        powershell "terraform plan -out=tfplan_${file} ${file}"
                     }
                 }
             }
@@ -43,18 +37,19 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    def files = params.TERRAFORM_FILES.split(',')
+                    def files = TERRAFORM_FILES.split(',')
                     files.each { file ->
-                        sh "terraform apply -auto-approve tfplan_${file}"
+                        powershell "terraform apply -auto-approve tfplan_${file}"
                     }
                 }
             }
         }
     }
-
+    
     post {
         always {
             echo 'Pipeline finished'
         }
     }
 }
+

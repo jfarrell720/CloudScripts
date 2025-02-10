@@ -1,0 +1,4 @@
+*.json
+*.wsuo
+*.sqlite
+*.vsidx

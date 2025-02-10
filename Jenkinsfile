@@ -11,13 +11,16 @@ pipeline {
         AWS_DEFAULT_REGION = 'us-east-1'
     }
 
+    pipeline {
+    agent any
+
     stages {
         stage('Terraform Init') {
             steps {
                 script {
-                    def files = TERRAFORM_FILES.split(',')
+                    def files = params.TERRAFORM_FILES.split(',')
                     files.each { file ->
-                        powershell "terraform init ${file}"
+                        sh "terraform init -chdir=${file}"
                     }
                 }
             }
@@ -26,9 +29,9 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 script {
-                    def files = TERRAFORM_FILES.split(',')
+                    def files = params.TERRAFORM_FILES.split(',')
                     files.each { file ->
-                        powershell "terraform plan -out=tfplan_${file} ${file}"
+                        sh "terraform -chdir=${file} plan -out=tfplan"
                     }
                 }
             }
@@ -37,19 +40,18 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    def files = TERRAFORM_FILES.split(',')
+                    def files = params.TERRAFORM_FILES.split(',')
                     files.each { file ->
-                        powershell "terraform apply -auto-approve tfplan_${file}"
+                        sh "terraform -chdir=${file} apply -auto-approve tfplan"
                     }
                 }
             }
         }
     }
-    
+
     post {
         always {
             echo 'Pipeline finished'
         }
     }
 }
-
